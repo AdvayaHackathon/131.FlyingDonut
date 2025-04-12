@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PPG Analysis Results</title>
+    <style>
+        body {
+             font-family: Arial, sans-serif;
+             background: #f2f2f2;
+             padding: 20px;
+         }
+         .results-container {
+             max-width: 800px;
+             margin: 0 auto;
+             background: #fff;
+             padding: 30px;
+             border-radius: 10px;
+             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+         }
+         h1, h2 {
+             color: #333;
+         }
+         ul {
+             list-style-type: none;
+             padding: 0;
+         }
+         li {
+             padding: 8px 0;
+             border-bottom: 1px solid #ddd;
+         }
+         li:last-child {
+             border-bottom: none;
+         }
+         .back-btn {
+             display: inline-block;
+             padding: 12px 24px;
+             background: #ff4500;
+             color: #fff;
+             border-radius: 5px;
+             text-decoration: none;
+             margin-top: 20px;
+         }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <h1>PPG Analysis Results</h1>
+        <h2>Traditional Measurements</h2>
+        <ul>
+            <li><strong>Heart Rate:</strong> {{ traditional.heart_rate }} BPM</li>
+            <li><strong>HRV:</strong> {{ traditional.hrv }} ms</li>
+            <li><strong>Respiratory Rate:</strong> {{ traditional.resp_rate }} breaths/min</li>
+            <li><strong>Pulse Amplitude:</strong> {{ traditional.pulse_amp }}</li>
+        </ul>
+        <h2>ML Enhanced Predictions</h2>
+        <ul>
+            <li><strong>Heart Rate:</strong> {{ ml_predictions.heart_rate }} BPM</li>
+            <li><strong>HRV:</strong> {{ ml_predictions.hrv }} ms</li>
+            <li><strong>Respiratory Rate:</strong> {{ ml_predictions.resp_rate }} breaths/min</li>
+            <li><strong>Pulse Amplitude:</strong> {{ ml_predictions.pulse_amp }}</li>
+        </ul>
+        <h2>Model Evaluation (ML vs Traditional)</h2>
+        <ul>
+            {% for metric, evals in evaluation.items %}
+                 <li><strong>{{ metric|capfirst }}:</strong> MAE = {{ evals.mae }}, MSE = {{ evals.mse }}, Relative Error = {{ evals.relative_error }}%</li>
+            {% endfor %}
+         </ul>
+        <a href="{% url 'ppg' %}" class="back-btn">Back</a>
+    </div>
+
+    <!-- Inline JavaScript for API Alert -->
+    <script>
+        // Parse traditional heart rate (assuming it's an integer)
+        var heartRate = parseInt("{{ traditional.heart_rate }}", 10);
+
+        // Check if heart rate is below 60 or above 100 BPM
+        if (heartRate < 60 || heartRate > 100) {
+            // API endpoint URL (update to match your back-end configuration)
+            var alertUrl = '/alert/';
+
+            // Build the payload data to send with the request
+            var data = { heartRate: heartRate };
+
+            // If CSRF protection is enabled, you may need to retrieve the CSRF token. For example:
+            // var csrftoken = document.cookie.match(/csrftoken=([\w-]+)/)[1];
+
+            fetch(alertUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'X-CSRFToken': csrftoken  // Uncomment if CSRF token is required
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(responseData => {
+                console.log('Alert API call successful:', responseData);
+            })
+            .catch(error => {
+                console.error('Error during API alert call:', error);
+            });
+        }
+    </script>
+</body>
+</html>

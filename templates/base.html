@@ -1,0 +1,274 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthSupport & MedConnect - Revolutionizing Healthcare Connectivity</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --secondary-teal: #00bcd4;
+            --accent-green: #4CAF50;
+            --dark-text: #2d3436;
+            --light-bg: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .hero {
+            min-height: 100vh;
+            padding: 80px 20px;
+            background: linear-gradient(45deg, var(--primary-blue), var(--secondary-teal));
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 4rem auto;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+            color: black;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        /* Updated Button Styles */
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid transparent;
+            background-color: white;
+            color: var(--primary-blue);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(26, 115, 232, 0.3);
+        }
+
+        .btn-secondary {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--accent-green);
+            color: white;
+        }
+
+        .btn i {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+
+        .btn span {
+            position: relative;
+            top: 1px;
+        }
+
+        .coming-soon {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coming-soon::after {
+            content: 'Coming Soon';
+            position: absolute;
+            top: -10px;
+            right: -30px;
+            background: #ff4757;
+            color: white;
+            padding: 0.25rem 2rem;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="container">
+            <span class="nav-logo">HealthSupport & MedConnect</span>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content animate-fade-in">
+                <h1>Transforming Healthcare Through Innovation</h1>
+                <p class="tagline">Seamless PPG Analysis • Doctor Collaboration • AI-Powered Diagnostics</p>
+
+                <div class="cta-buttons">
+                    <a href="{% url 'ppg' %}" class="btn btn-primary">
+                        <i class="fas fa-heartbeat" ></i>
+                        <span>PPG Analysis</span>
+                    </a>
+                    <a href="{% url 'capture_image' %}" class="btn btn-secondary">
+                        <i class="fas fa-camera"></i>
+                        <span>Image Diagnostics</span>
+                    </a>
+                    <a href="https://93b9aad7-977d-4634-8c81-f18f3a4d3e57-00-1wb8u4q2qhvrn.riker.replit.dev/" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-stethoscope"></i>
+                        <span>Doctor LinkedIn</span>
+                    </a>
+                </div>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <i class="fas fa-wave-square feature-icon"></i>
+                        <h3>Advanced PPG Monitoring</h3>
+                        <p>Real-time photoplethysmography analysis with AI-powered health insights</p>
+                    </div>
+
+                    <div class="feature-card coming-soon">
+                        <i class="fas fa-user-md feature-icon"></i>
+                        <h3>Doctor Connect Network</h3>
+                        <p>Collaborative platform for healthcare professionals (Launching Q4 2024)</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fas fa-robot feature-icon"></i>
+                        <h3>Smart Diagnostics</h3>
+                        <p>AI-driven image analysis for rapid preliminary assessments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Image</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      background-color: #222;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    #video {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      border: 3px solid white;
+    }
+    #canvas {
+      display: none;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #ff4500;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background-color: #ff2200;
+    }
+    #preview {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Capture Image for Stress Analysis</h2>
+  <video id="video" autoplay></video>
+  <canvas id="canvas"></canvas>
+  <button class="btn" onclick="captureImage()">Capture Image</button>
+  <button id="submitBtn" class="btn" style="display: none;" onclick="sendImage()">Analyze Stress</button>
+  <img id="preview" />
+
+  <script>
+    // Global variable to store the captured image data
+    let capturedImageData = null;
+
+    let video    = document.getElementById('video');
+    let canvas   = document.getElementById('canvas');
+    let preview  = document.getElementById('preview');
+    let submitBtn= document.getElementById('submitBtn');
+
+    // Access the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => { video.srcObject = stream; })
+      .catch(err => console.error("Error accessing camera:", err));
+
+    // Capture image from video and store for later use
+    function captureImage() {
+      let context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      capturedImageData = canvas.toDataURL('image/png');
+      preview.src  = capturedImageData;
+      preview.style.display = "block";
+      submitBtn.style.display = "block";
+    }
+
+    // 1. Send captured image to the "capture_image" view to get prediction.
+    // 2. Then POST the JSON {stress_level: ...} to the "result2" view.
+    function sendImage() {
+      if (!capturedImageData) {
+        console.error("No image captured!");
+        return;
+      }
+
+      // First, send the image to your prediction endpoint
+      fetch("{% url 'capture_image' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCSRFToken()
+        },
+        body: "image=" + encodeURIComponent(capturedImageData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Now send stress level JSON to result2 endpoint.
+        return fetch("{% url 'result2' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+          },
+          body: JSON.stringify({ stress_level: data.stress_level })
+        });
+      })
+      .then(response => response.text()) // Expecting an HTML response
+      .then(html => {
+        // Replace the current page with the HTML from result2 view.
+        document.open();
+        document.write(html);
+        document.close();
+      })
+      .catch(error => console.error("Error:", error));
+    }
+
+    // Helper function to get the CSRF token from cookies
+    function getCSRFToken() {
+      return document.cookie.split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    }
+  </script>
+</body>
+</html>

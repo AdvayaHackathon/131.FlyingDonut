@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartbeat Detection</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url("{% static 'thumbprint.png' %}") no-repeat center center;
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.6); /* Semi-transparent overlay */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .instruction {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff4500;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ff2200;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="instruction">Touch your finger on the camera to record heartbeat</p>
+        <button class="btn" onclick="startPPG()"><a href="{% url 'record' %}">Click here</a></button>
+    </div>
+
+    <script>
+        function startPPG() {
+            alert("PPG recording started! Please hold your finger on the camera.");
+        }
+    </script>
+</body>
+</html>
